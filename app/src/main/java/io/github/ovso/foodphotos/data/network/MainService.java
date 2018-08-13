@@ -6,7 +6,7 @@ import java.util.Map;
 import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 
-public interface MainApi {
+public interface MainService {
   @GET("/v1/search/image") Observable<SearchResult> getSearchResult(
       @QueryMap Map<String, String> queryMap);
 }

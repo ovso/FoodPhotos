@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import okhttp3.Headers;
 
-public class MainNet extends BaseNetwork<MainApi> {
-  @Override protected Class<MainApi> getApiClass() {
-    return MainApi.class;
+public class MainRequest extends BaseNetwork<MainService> {
+  @Override protected Class<MainService> getApiClass() {
+    return MainService.class;
   }
 
   @Override protected Headers createHeaders() {

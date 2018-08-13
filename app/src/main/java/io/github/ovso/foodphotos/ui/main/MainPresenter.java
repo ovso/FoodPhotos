@@ -6,5 +6,8 @@ public interface MainPresenter {
 
   interface View {
 
+    void refresh();
+
+    void setupRecyclerView();
   }
 }

@@ -8,18 +8,24 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import butterknife.BindView;
 import io.github.ovso.foodphotos.R;
 import io.github.ovso.foodphotos.ui.base.BaseActivity;
+import io.github.ovso.foodphotos.ui.base.adapter.AdapterView;
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity
     implements NavigationView.OnNavigationItemSelectedListener, MainPresenter.View {
-
+  @BindView(R.id.recycler_view) RecyclerView recyclerView;
   @Inject MainPresenter presenter;
+  @Inject MainAdapter adapter;
+  @Inject AdapterView adapterView;
 
   @Override protected int getLayoutResId() {
     return R.layout.activity_main;
@@ -102,5 +108,14 @@ public class MainActivity extends BaseActivity
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     drawer.closeDrawer(GravityCompat.START);
     return true;
+  }
+
+  @Override public void refresh() {
+    adapterView.refresh();
+  }
+
+  @Override public void setupRecyclerView() {
+    recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+    recyclerView.setAdapter(adapter);
   }
 }
