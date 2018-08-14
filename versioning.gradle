@@ -40,6 +40,9 @@ ext {
 
   sheet_fab_version = '1.2.1'
 
+  //image
+  glide_version = '4.7.1'
+
   // Test
   junit_version = '4.12'
   runner_version = '1.0.2'

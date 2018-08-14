@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity
   }
 
   @Override public void setupRecyclerView() {
-    recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(adapter);
   }
 }
