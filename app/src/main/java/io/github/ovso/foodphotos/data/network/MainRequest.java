@@ -1,7 +1,7 @@
 package io.github.ovso.foodphotos.data.network;
 
 import io.github.ovso.foodphotos.Security;
-import io.github.ovso.foodphotos.data.network.model.SearchResult;
+import io.github.ovso.foodphotos.data.network.model.Photos;
 import io.reactivex.Observable;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class MainRequest extends BaseNetwork<MainService> {
     return Security.Api.URL.getUrl();
   }
 
-  public Observable<SearchResult> getResult() {
+  public Observable<Photos> getPhotos() {
     Map<String, String> queryMap = new HashMap<>();
     queryMap.put("display", String.valueOf(20));
     queryMap.put("start", String.valueOf(1));

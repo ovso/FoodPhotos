@@ -1,5 +1,6 @@
 package io.github.ovso.foodphotos.ui.main;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -7,8 +8,8 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -16,23 +17,33 @@ import android.view.MenuItem;
 import android.view.View;
 import butterknife.BindView;
 import io.github.ovso.foodphotos.R;
+import io.github.ovso.foodphotos.data.NetworkState;
+import io.github.ovso.foodphotos.data.Status;
 import io.github.ovso.foodphotos.ui.base.BaseActivity;
 import io.github.ovso.foodphotos.ui.base.adapter.AdapterView;
+import io.github.ovso.foodphotos.ui.main.adapter.MainAdapter;
+import io.github.ovso.foodphotos.ui.main.adapter.MainAdapter2;
+import io.github.ovso.foodphotos.ui.main.adapter.RetryCallback;
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity
-    implements NavigationView.OnNavigationItemSelectedListener, MainPresenter.View {
+    implements NavigationView.OnNavigationItemSelectedListener, MainPresenter.View, RetryCallback {
   @BindView(R.id.recycler_view) RecyclerView recyclerView;
   @Inject MainPresenter presenter;
   @Inject MainAdapter adapter;
   @Inject AdapterView adapterView;
+  @Inject MainAdapter2 adapter2;
+  @BindView(R.id.swipe_refresh_layout)
+  SwipeRefreshLayout swipe;
+
+  private PhotosViewModel photosViewModel;
 
   @Override protected int getLayoutResId() {
     return R.layout.activity_main;
   }
 
   @Override protected void onCreated(@Nullable Bundle saveInstanceState) {
-    presenter.onCreate();
+    //presenter.onCreate();
 
     FloatingActionButton fab = findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -51,11 +62,57 @@ public class MainActivity extends BaseActivity
 
     NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
+
+    photosViewModel = ViewModelProviders.of(this).get(PhotosViewModel.class);
+    initAdapter();
+    initSwipeToRefresh();
+
+  }
+
+  private void initSwipeToRefresh() {
+    photosViewModel.getRefreshState().observe(this, networkState -> {
+      if (networkState != null) {
+        if (adapter2.getCurrentList() != null) {
+          if (adapter2.getCurrentList().size() > 0) {
+            swipe.setRefreshing(
+                networkState.getStatus() == NetworkState.LOADING.getStatus());
+          } else {
+            setInitialLoadingState(networkState);
+          }
+        } else {
+          setInitialLoadingState(networkState);
+        }
+      }
+    });
+    swipe.setOnRefreshListener(() -> photosViewModel.refresh());
+
+  }
+  private void setInitialLoadingState(NetworkState networkState) {
+    //error message
+    //errorMessageTextView.setVisibility(networkState.getMessage() != null ? View.VISIBLE : View.GONE);
+    if (networkState.getMessage() != null) {
+      //errorMessageTextView.setText(networkState.getMessage());
+    }
+
+    //loading and retry
+    //retryLoadingButton.setVisibility(networkState.getStatus() == Status.FAILED ? View.VISIBLE : View.GONE);
+    //loadingProgressBar.setVisibility(networkState.getStatus() == Status.RUNNING ? View.VISIBLE : View.GONE);
+
+    swipe.setEnabled(networkState.getStatus() == Status.SUCCESS);
+  }
+
+  private void initAdapter() {
+    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
+        LinearLayoutManager.VERTICAL, false);
+    recyclerView.setLayoutManager(linearLayoutManager);
+    recyclerView.setAdapter(adapter2);
+    photosViewModel.photoList.observe(this, pagedList -> adapter2.submitList(pagedList));
+    photosViewModel.getNetworkState().observe(this, adapter2::setNetworkState);
   }
 
   @Override
   public void onBackPressed() {
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    DrawerLayout drawer = findViewById(R.id.drawer_layout);
     if (drawer.isDrawerOpen(GravityCompat.START)) {
       drawer.closeDrawer(GravityCompat.START);
     } else {
@@ -117,5 +174,9 @@ public class MainActivity extends BaseActivity
   @Override public void setupRecyclerView() {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(adapter);
+  }
+
+  @Override public void retry() {
+
   }
 }

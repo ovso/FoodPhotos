@@ -1,4 +1,4 @@
-package io.github.ovso.foodphotos.ui.main;
+package io.github.ovso.foodphotos.ui.main.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.ovso.foodphotos.R;
-import io.github.ovso.foodphotos.data.network.model.SearchResultItem;
+import io.github.ovso.foodphotos.data.network.model.Photo;
 import io.github.ovso.foodphotos.ui.base.GlideApp;
 import io.github.ovso.foodphotos.ui.base.adapter.AdapterDataModel;
 import io.github.ovso.foodphotos.ui.base.adapter.AdapterView;
@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainAdapter extends RecyclerView.Adapter
-    implements AdapterView, AdapterDataModel<SearchResultItem> {
+    implements AdapterView, AdapterDataModel<Photo> {
 
-  private List<SearchResultItem> items = new ArrayList<>();
+  private List<Photo> items = new ArrayList<>();
 
   @NonNull @Override
   public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -32,7 +32,7 @@ public class MainAdapter extends RecyclerView.Adapter
     if (holder instanceof MainViewHolder) {
       AppCompatImageView imageView = ((MainViewHolder) holder).imageView;
       Context context = imageView.getContext();
-      GlideApp.with(context).load(items.get(position).getThumbnail()).into(imageView);
+      GlideApp.with(context).load(items.get(position).getLink()).into(imageView);
     }
   }
 
@@ -49,11 +49,11 @@ public class MainAdapter extends RecyclerView.Adapter
     items.addAll($items);
   }
 
-  @Override public void addItem(SearchResultItem $item) {
+  @Override public void addItem(Photo $item) {
 
   }
 
-  @Override public void setItem(SearchResultItem $item) {
+  @Override public void setItem(Photo $item) {
 
   }
 

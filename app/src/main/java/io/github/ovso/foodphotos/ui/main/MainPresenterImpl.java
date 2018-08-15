@@ -1,8 +1,8 @@
 package io.github.ovso.foodphotos.ui.main;
 
 import io.github.ovso.foodphotos.data.network.MainRequest;
-import io.github.ovso.foodphotos.data.network.model.SearchResult;
-import io.github.ovso.foodphotos.data.network.model.SearchResultItem;
+import io.github.ovso.foodphotos.data.network.model.Photos;
+import io.github.ovso.foodphotos.data.network.model.Photo;
 import io.github.ovso.foodphotos.ui.base.adapter.AdapterDataModel;
 import io.github.ovso.foodphotos.utils.SchedulersFacade;
 import io.reactivex.disposables.CompositeDisposable;
@@ -15,10 +15,10 @@ public class MainPresenterImpl implements MainPresenter {
   private MainPresenter.View view;
   private MainRequest net;
   private SchedulersFacade schedulersFacade;
-  private AdapterDataModel<SearchResultItem> adapterDataModel;
+  private AdapterDataModel<Photo> adapterDataModel;
 
   public MainPresenterImpl(MainPresenter.View $view, MainRequest $net,
-      SchedulersFacade $schedulersFacade, AdapterDataModel<SearchResultItem> a$dapterDataModel) {
+      SchedulersFacade $schedulersFacade, AdapterDataModel<Photo> a$dapterDataModel) {
     view = $view;
     net = $net;
     schedulersFacade = $schedulersFacade;
@@ -27,12 +27,12 @@ public class MainPresenterImpl implements MainPresenter {
 
   @Override public void onCreate() {
     view.setupRecyclerView();
-    compositeDisposable.add(net.getResult()
+    compositeDisposable.add(net.getPhotos()
         .subscribeOn(schedulersFacade.io())
         .observeOn(schedulersFacade.ui())
         .subscribe(
-            new Consumer<SearchResult>() {
-              @Override public void accept(SearchResult result) throws Exception {
+            new Consumer<Photos>() {
+              @Override public void accept(Photos result) throws Exception {
                 adapterDataModel.addItems(result.getItems());
                 view.refresh();
               }
