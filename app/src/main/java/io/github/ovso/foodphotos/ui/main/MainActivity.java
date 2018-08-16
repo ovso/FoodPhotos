@@ -1,6 +1,5 @@
 package io.github.ovso.foodphotos.ui.main;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -17,33 +16,26 @@ import android.view.MenuItem;
 import android.view.View;
 import butterknife.BindView;
 import io.github.ovso.foodphotos.R;
-import io.github.ovso.foodphotos.data.NetworkState;
-import io.github.ovso.foodphotos.data.Status;
+import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
+import io.github.ovso.foodphotos.ui.main.adapter.Status;
 import io.github.ovso.foodphotos.ui.base.BaseActivity;
-import io.github.ovso.foodphotos.ui.base.adapter.AdapterView;
 import io.github.ovso.foodphotos.ui.main.adapter.MainAdapter;
-import io.github.ovso.foodphotos.ui.main.adapter.MainAdapter2;
 import io.github.ovso.foodphotos.ui.main.adapter.RetryCallback;
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity
-    implements NavigationView.OnNavigationItemSelectedListener, MainPresenter.View, RetryCallback {
+    implements NavigationView.OnNavigationItemSelectedListener, RetryCallback {
   @BindView(R.id.recycler_view) RecyclerView recyclerView;
-  @Inject MainPresenter presenter;
-  @Inject MainAdapter adapter;
-  @Inject AdapterView adapterView;
-  @Inject MainAdapter2 adapter2;
-  @BindView(R.id.swipe_refresh_layout)
-  SwipeRefreshLayout swipe;
+  @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe;
 
-  private PhotosViewModel photosViewModel;
+  @Inject MainAdapter adapter2;
+  @Inject PhotosViewModel photosViewModel;
 
   @Override protected int getLayoutResId() {
     return R.layout.activity_main;
   }
 
   @Override protected void onCreated(@Nullable Bundle saveInstanceState) {
-    //presenter.onCreate();
 
     FloatingActionButton fab = findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -63,10 +55,8 @@ public class MainActivity extends BaseActivity
     NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
 
-    photosViewModel = ViewModelProviders.of(this).get(PhotosViewModel.class);
     initAdapter();
     initSwipeToRefresh();
-
   }
 
   private void initSwipeToRefresh() {
@@ -85,8 +75,8 @@ public class MainActivity extends BaseActivity
       }
     });
     swipe.setOnRefreshListener(() -> photosViewModel.refresh());
-
   }
+
   private void setInitialLoadingState(NetworkState networkState) {
     //error message
     //errorMessageTextView.setVisibility(networkState.getMessage() != null ? View.VISIBLE : View.GONE);
@@ -165,15 +155,6 @@ public class MainActivity extends BaseActivity
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     drawer.closeDrawer(GravityCompat.START);
     return true;
-  }
-
-  @Override public void refresh() {
-    adapterView.refresh();
-  }
-
-  @Override public void setupRecyclerView() {
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    recyclerView.setAdapter(adapter);
   }
 
   @Override public void retry() {

@@ -10,8 +10,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.ovso.foodphotos.R;
-import io.github.ovso.foodphotos.data.NetworkState;
-import io.github.ovso.foodphotos.data.Status;
 
 /**
  * Created by Ahmed Abd-Elmeged on 2/20/2018.

@@ -1,4 +1,4 @@
-package io.github.ovso.foodphotos.data.datasource;
+package io.github.ovso.foodphotos.ui.main.adapter.datasource;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.DataSource;

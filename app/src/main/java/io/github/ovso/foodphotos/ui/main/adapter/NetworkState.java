@@ -1,4 +1,4 @@
-package io.github.ovso.foodphotos.data;
+package io.github.ovso.foodphotos.ui.main.adapter;
 
 /**
  * Created by Ahmed Abd-Elmeged on 2/13/2018.

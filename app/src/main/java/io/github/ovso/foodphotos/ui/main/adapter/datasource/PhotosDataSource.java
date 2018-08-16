@@ -1,9 +1,9 @@
-package io.github.ovso.foodphotos.data.datasource;
+package io.github.ovso.foodphotos.ui.main.adapter.datasource;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.ItemKeyedDataSource;
 import android.support.annotation.NonNull;
-import io.github.ovso.foodphotos.data.NetworkState;
+import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
 import io.github.ovso.foodphotos.data.network.MainRequest;
 import io.github.ovso.foodphotos.data.network.model.Photo;
 import io.github.ovso.foodphotos.data.network.model.Photos;
@@ -107,22 +107,22 @@ public class PhotosDataSource extends ItemKeyedDataSource<Long, Photo> {
 
     //get the users from the api after id
     compositeDisposable.add(
-        mainRequest.getPhotos().map(new Function<Photos, List<Photo>>() {
-          @Override public List<Photo> apply(Photos photos) throws Exception {
-            return photos.getItems();
-          }
-        }).subscribeOn(schedulersFacade.io()).observeOn(schedulersFacade.ui()).subscribe(photos -> {
-              // clear retry since last request succeeded
-              setRetry(null);
-              networkState.postValue(NetworkState.LOADED);
-              callback.onResult(photos);
-            },
-            throwable -> {
-              // keep a Completable for future retry
-              setRetry(() -> loadAfter(params, callback));
-              // publish the error
-              networkState.postValue(NetworkState.error(throwable.getMessage()));
-            }));
+        mainRequest.getPhotos()
+            .map(photos -> photos.getItems())
+            .subscribeOn(schedulersFacade.io())
+            .observeOn(schedulersFacade.ui())
+            .subscribe(photos -> {
+                  // clear retry since last request succeeded
+                  setRetry(null);
+                  networkState.postValue(NetworkState.LOADED);
+                  callback.onResult(photos);
+                },
+                throwable -> {
+                  // keep a Completable for future retry
+                  setRetry(() -> loadAfter(params, callback));
+                  // publish the error
+                  networkState.postValue(NetworkState.error(throwable.getMessage()));
+                }));
   }
 
   @Override
