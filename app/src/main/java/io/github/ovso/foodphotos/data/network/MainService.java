@@ -8,5 +8,5 @@ import retrofit2.http.QueryMap;
 
 public interface MainService {
   @GET("/v1/search/image") Observable<Photos> getSearchResult(
-      @QueryMap Map<String, String> queryMap);
+      @QueryMap Map<String, Object> queryMap);
 }

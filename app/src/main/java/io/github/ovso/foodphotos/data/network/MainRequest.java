@@ -23,10 +23,10 @@ public class MainRequest extends BaseNetwork<MainService> {
     return Security.Api.URL.getUrl();
   }
 
-  public Observable<Photos> getPhotos() {
-    Map<String, String> queryMap = new HashMap<>();
+  public Observable<Photos> getPhotos(int page) {
+    Map<String, Object> queryMap = new HashMap<>();
     queryMap.put("display", String.valueOf(20));
-    queryMap.put("start", String.valueOf(1));
+    queryMap.put("start", page);
     queryMap.put("query", "햄버거");
 
     return getApi().getSearchResult(queryMap);

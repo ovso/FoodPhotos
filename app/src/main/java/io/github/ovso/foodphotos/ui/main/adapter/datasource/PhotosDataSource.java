@@ -5,6 +5,7 @@ import android.arch.paging.ItemKeyedDataSource;
 import android.support.annotation.NonNull;
 import io.github.ovso.foodphotos.data.network.MainRequest;
 import io.github.ovso.foodphotos.data.network.model.Photo;
+import io.github.ovso.foodphotos.data.network.model.Photos;
 import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
 import io.github.ovso.foodphotos.utils.SchedulersFacade;
 import io.reactivex.Completable;
@@ -15,6 +16,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import timber.log.Timber;
 
 /**
@@ -36,6 +38,7 @@ public class PhotosDataSource extends ItemKeyedDataSource<Long, Photo> {
    * Keep Completable reference for the retry event
    */
   private Completable retryCompletable;
+  private AtomicInteger page = new AtomicInteger(1);
 
   PhotosDataSource(CompositeDisposable compositeDisposable) {
     this.mainRequest = new MainRequest();
@@ -56,15 +59,16 @@ public class PhotosDataSource extends ItemKeyedDataSource<Long, Photo> {
   @Override
   public void loadInitial(@NonNull LoadInitialParams<Long> params, @NonNull
       LoadInitialCallback<Photo> callback) {
+    Timber.d("loadInitial");
     // update network states.
     // we also provide an initial load state to the listeners so that the UI can know when the
     // very first list is loaded.
     networkState.postValue(NetworkState.LOADING);
     initialLoad.postValue(NetworkState.LOADING);
 
-    mainRequest.getPhotos()
+    mainRequest.getPhotos(page.get())
         .map(
-            photos -> photos.getItems()
+            Photos::getItems
         )
         .subscribeOn(schedulersFacade.io())
         .observeOn(schedulersFacade.ui())
@@ -100,13 +104,15 @@ public class PhotosDataSource extends ItemKeyedDataSource<Long, Photo> {
   @Override
   public void loadAfter(@NonNull LoadParams<Long> params,
       @NonNull LoadCallback<Photo> callback) {
+    Timber.d("loadAfter");
+
     // set network value to loading.
     networkState.postValue(NetworkState.LOADING);
 
     //get the users from the api after id
     compositeDisposable.add(
-        mainRequest.getPhotos()
-            .map(photos -> photos.getItems())
+        mainRequest.getPhotos(page.incrementAndGet())
+            .map(Photos::getItems)
             .subscribeOn(schedulersFacade.io())
             .observeOn(schedulersFacade.ui())
             .subscribe(photos -> {
