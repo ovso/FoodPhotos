@@ -10,18 +10,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import butterknife.BindView;
 import io.github.ovso.foodphotos.R;
-import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
-import io.github.ovso.foodphotos.ui.main.adapter.Status;
 import io.github.ovso.foodphotos.ui.base.BaseActivity;
 import io.github.ovso.foodphotos.ui.main.adapter.MainAdapter;
+import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
 import io.github.ovso.foodphotos.ui.main.adapter.RetryCallback;
+import io.github.ovso.foodphotos.ui.main.adapter.Status;
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity
@@ -96,7 +95,12 @@ public class MainActivity extends BaseActivity
     recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
     recyclerView.setAdapter(adapter2);
     photosViewModel.photoList.observe(this, pagedList -> adapter2.submitList(pagedList));
-    photosViewModel.getNetworkState().observe(this, adapter2::setNetworkState);
+    photosViewModel.getNetworkState().observe(this, this::networkStateObserver);
+  }
+
+  private void networkStateObserver(NetworkState networkState) {
+    adapter2.setNetworkState(networkState);
+    swipe.setRefreshing(false);
   }
 
   @Override

@@ -3,18 +3,16 @@ package io.github.ovso.foodphotos.ui.main.adapter.datasource;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.ItemKeyedDataSource;
 import android.support.annotation.NonNull;
-import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
 import io.github.ovso.foodphotos.data.network.MainRequest;
 import io.github.ovso.foodphotos.data.network.model.Photo;
-import io.github.ovso.foodphotos.data.network.model.Photos;
+import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
 import io.github.ovso.foodphotos.utils.SchedulersFacade;
 import io.reactivex.Completable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import java.util.List;
 import timber.log.Timber;
@@ -64,39 +62,39 @@ public class PhotosDataSource extends ItemKeyedDataSource<Long, Photo> {
     networkState.postValue(NetworkState.LOADING);
     initialLoad.postValue(NetworkState.LOADING);
 
-    Disposable subscribe = mainRequest.getPhotos()
+    mainRequest.getPhotos()
         .map(
-            new Function<Photos, List<Photo>>() {
-              @Override public List<Photo> apply(Photos photos) throws Exception {
-                return photos.getItems();
-              }
-            }
+            photos -> photos.getItems()
         )
         .subscribeOn(schedulersFacade.io())
         .observeOn(schedulersFacade.ui())
-        .subscribe(new Consumer<List<Photo>>() {
-                     @Override public void accept(List<Photo> photos) throws Exception {
-                       // clear retry since last request succeeded
-                       PhotosDataSource.this.setRetry(
-                           null);
-                       networkState.postValue(
-                           NetworkState.LOADED);
-                       initialLoad.postValue(
-                           NetworkState.LOADED);
-                       callback.onResult(photos);
-                     }
-                   },
-            throwable -> {
-              // keep a Completable for future retry
-              setRetry(() -> loadInitial(params, callback));
-              NetworkState error = NetworkState.error(throwable.getMessage());
-              // publish the error
-              networkState.postValue(error);
-              initialLoad.postValue(error);
-            });
+        .subscribe(new Observer<List<Photo>>() {
+          @Override public void onSubscribe(Disposable d) {
+            compositeDisposable.add(d);
+          }
 
-    //get the initial users from the api
-    compositeDisposable.add(subscribe);
+          @Override public void onNext(List<Photo> photos) {
+            PhotosDataSource.this.setRetry(
+                null);
+            networkState.postValue(
+                NetworkState.LOADED);
+            initialLoad.postValue(
+                NetworkState.LOADED);
+            callback.onResult(photos);
+          }
+
+          @Override public void onError(Throwable e) {
+            setRetry(() -> loadInitial(params, callback));
+            NetworkState error = NetworkState.error(e.getMessage());
+            // publish the error
+            networkState.postValue(error);
+            initialLoad.postValue(error);
+          }
+
+          @Override public void onComplete() {
+
+          }
+        });
   }
 
   @Override

@@ -5,13 +5,11 @@ import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
-import io.github.ovso.foodphotos.data.network.MainRequest;
 import io.github.ovso.foodphotos.data.network.model.Photo;
 import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
 import io.github.ovso.foodphotos.ui.main.adapter.datasource.PhotosDataSource;
 import io.github.ovso.foodphotos.ui.main.adapter.datasource.PhotosDataSourceFactory;
 import io.reactivex.disposables.CompositeDisposable;
-import javax.inject.Inject;
 
 public class PhotosViewModel extends ViewModel {
   LiveData<PagedList<Photo>> photoList;
@@ -21,7 +19,6 @@ public class PhotosViewModel extends ViewModel {
   private static final int pageSize = 20;
 
   private PhotosDataSourceFactory photosDataSourceFactory;
-  @Inject MainRequest mainRequest;
 
   public PhotosViewModel() {
     photosDataSourceFactory = new PhotosDataSourceFactory(compositeDisposable);

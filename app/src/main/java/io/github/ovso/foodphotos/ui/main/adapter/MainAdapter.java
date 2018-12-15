@@ -86,6 +86,7 @@ public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder
   }
 
   public void setNetworkState(NetworkState newNetworkState) {
+    Timber.d("setNetworkState = " + newNetworkState.getStatus());
     if (getCurrentList() != null) {
       if (getCurrentList().size() != 0) {
         NetworkState previousState = this.networkState;
