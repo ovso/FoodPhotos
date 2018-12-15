@@ -9,6 +9,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -46,7 +47,7 @@ public class MainActivity extends BaseActivity
       }
     });
 
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    DrawerLayout drawer = findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
         this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     drawer.addDrawerListener(toggle);
@@ -92,9 +93,7 @@ public class MainActivity extends BaseActivity
   }
 
   private void initAdapter() {
-    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
-        LinearLayoutManager.VERTICAL, false);
-    recyclerView.setLayoutManager(linearLayoutManager);
+    recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
     recyclerView.setAdapter(adapter2);
     photosViewModel.photoList.observe(this, pagedList -> adapter2.submitList(pagedList));
     photosViewModel.getNetworkState().observe(this, adapter2::setNetworkState);

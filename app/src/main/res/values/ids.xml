@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <item name="recycler_view" type="id"/>
-  <item name="image_view" type="id"/>
+  <item name="imageview_mainviewholder" type="id"/>
   <item name="swipe_refresh_layout" type="id"/>
-  <item name="title_textview" type="id"/>
+  <item name="textview_mainviewholder" type="id"/>
 </resources>

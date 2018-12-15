@@ -27,7 +27,7 @@ public class PhotosViewModel extends ViewModel {
     photosDataSourceFactory = new PhotosDataSourceFactory(compositeDisposable);
     PagedList.Config config = new PagedList.Config.Builder()
         .setPageSize(pageSize)
-        .setInitialLoadSizeHint(pageSize * 2)
+        .setInitialLoadSizeHint(pageSize + 1)
         .setEnablePlaceholders(false)
         .build();
 

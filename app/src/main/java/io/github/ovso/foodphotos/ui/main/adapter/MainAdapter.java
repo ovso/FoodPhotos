@@ -1,7 +1,6 @@
 package io.github.ovso.foodphotos.ui.main.adapter;
 
 import android.arch.paging.PagedListAdapter;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.AppCompatImageView;
@@ -42,8 +41,8 @@ public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder
     switch (viewType) {
       case R.layout.list_item_main:
         return MainViewHolder.create(parent);
-      case R.layout.item_network_state:
-        return NetworkStateViewHolder.create(parent, retryCallback);
+      case R.layout.item_loadingviewholder:
+        return LoadingViewHolder.create(parent, retryCallback);
       default:
         throw new IllegalArgumentException("unknown view type");
     }
@@ -52,7 +51,7 @@ public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder
   @Override public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
     if (holder instanceof MainViewHolder) {
       ((MainViewHolder) holder).bind(getItem(position));
-    } else if (holder instanceof NetworkStateViewHolder) {
+    } else if (holder instanceof LoadingViewHolder) {
 
     }
   }
@@ -113,15 +112,15 @@ public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder
   @Override
   public int getItemViewType(int position) {
     if (hasExtraRow() && position == getItemCount() - 1) {
-      return R.layout.item_network_state;
+      return R.layout.item_loadingviewholder;
     } else {
       return R.layout.list_item_main;
     }
   }
 
   public static class MainViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.image_view) AppCompatImageView imageView;
-    @BindView(R.id.title_textview) TextView titleTextview;
+    @BindView(R.id.imageview_mainviewholder) AppCompatImageView imageView;
+    @BindView(R.id.textview_mainviewholder) TextView titleTextview;
 
     public MainViewHolder(View itemView) {
       super(itemView);
