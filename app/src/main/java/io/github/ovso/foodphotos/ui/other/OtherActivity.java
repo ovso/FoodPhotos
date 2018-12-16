@@ -5,11 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import butterknife.BindView;
 import io.github.ovso.foodphotos.R;
 import io.github.ovso.foodphotos.ui.base.BaseActivity;
+import io.github.ovso.foodphotos.ui.other.adapter.OtherAdapter;
 import javax.inject.Inject;
 
 public class OtherActivity extends BaseActivity implements OtherPresenter.View {
   @BindView(R.id.recyclerview_other) RecyclerView recyclerView;
   @Inject OtherPresenter presenter;
+  @Inject OtherAdapter adapter;
 
   @Override protected int getLayoutResId() {
     return R.layout.activity_other;
@@ -17,5 +19,6 @@ public class OtherActivity extends BaseActivity implements OtherPresenter.View {
 
   @Override public void setupRecyclerView() {
     recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+    //recyclerView.setAdapter();
   }
 }
