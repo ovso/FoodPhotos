@@ -1,4 +1,4 @@
-package io.github.ovso.foodphotos.ui.main.adapter;
+package io.github.ovso.foodphotos.ui.other.adapter;
 
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
@@ -9,23 +9,24 @@ import io.github.ovso.foodphotos.R;
 import io.github.ovso.foodphotos.data.network.model.Photo;
 import io.github.ovso.foodphotos.ui.base.adapter.AdapterDataModel;
 import io.github.ovso.foodphotos.ui.base.adapter.AdapterView;
+import io.github.ovso.foodphotos.ui.main.adapter.LoadingViewHolder;
+import io.github.ovso.foodphotos.ui.main.adapter.MainViewHolder;
+import io.github.ovso.foodphotos.ui.main.adapter.NetworkState;
+import io.github.ovso.foodphotos.ui.main.adapter.RetryCallback;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import timber.log.Timber;
 
-public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder>
+public class OtherAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder>
     implements AdapterView, AdapterDataModel<Photo> {
 
   private NetworkState networkState;
 
-  private RetryCallback retryCallback;
-
   private List<Photo> items = new ArrayList<>();
 
-  public MainAdapter(RetryCallback $retryCallback) {
+  public OtherAdapter(RetryCallback $retryCallback) {
     super(phtosDiffCallback);
-    retryCallback = $retryCallback;
   }
 
   @NonNull @Override
@@ -33,17 +34,17 @@ public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder
     Timber.d("viewType = " + viewType);
     switch (viewType) {
       case R.layout.list_item_main:
-        return MainViewHolder.create(parent);
+        return OtherViewHolder.create(parent);
       case R.layout.item_loadingviewholder:
-        return LoadingViewHolder.create(parent, retryCallback);
+        return OtherLoadingViewHolder.create(parent);
       default:
         throw new IllegalArgumentException("unknown view type");
     }
   }
 
   @Override public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-    if (holder instanceof MainViewHolder) {
-      ((MainViewHolder) holder).bind(getItem(position));
+    if (holder instanceof OtherViewHolder) {
+      ((OtherViewHolder) holder).bind(getItem(position));
     } else if (holder instanceof LoadingViewHolder) {
 
     }

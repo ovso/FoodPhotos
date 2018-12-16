@@ -35,8 +35,12 @@ public class MainActivity extends BaseActivity
     return R.layout.activity_main;
   }
 
-  @Override protected void onCreated(@Nullable Bundle saveInstanceState) {
+  @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setupLayout();
+  }
 
+  private void setupLayout() {
     FloatingActionButton fab = findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -52,7 +56,7 @@ public class MainActivity extends BaseActivity
     drawer.addDrawerListener(toggle);
     toggle.syncState();
 
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+    NavigationView navigationView = findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
 
     initAdapter();

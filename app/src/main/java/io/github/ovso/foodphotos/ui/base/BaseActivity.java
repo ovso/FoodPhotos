@@ -19,7 +19,6 @@ public abstract class BaseActivity extends DaggerAppCompatActivity {
     setContentView(getLayoutResId());
     setupButterKnife();
     setupActionBar();
-    onCreated(savedInstanceState);
   }
 
   private void setupActionBar() {
@@ -31,8 +30,6 @@ public abstract class BaseActivity extends DaggerAppCompatActivity {
   }
 
   protected abstract int getLayoutResId();
-
-  protected abstract void onCreated(@Nullable Bundle saveInstanceState);
 
   @Override protected void onDestroy() {
     super.onDestroy();
