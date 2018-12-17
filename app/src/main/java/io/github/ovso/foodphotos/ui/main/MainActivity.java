@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity
   @BindView(R.id.recycler_view) RecyclerView recyclerView;
   @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipe;
 
-  @Inject MainAdapter adapter2;
+  @Inject MainAdapter adapter;
   @Inject PhotosViewModel photosViewModel;
 
   @Override protected int getLayoutResId() {
@@ -66,8 +66,8 @@ public class MainActivity extends BaseActivity
   private void initSwipeToRefresh() {
     photosViewModel.getRefreshState().observe(this, networkState -> {
       if (networkState != null) {
-        if (adapter2.getCurrentList() != null) {
-          if (adapter2.getCurrentList().size() > 0) {
+        if (adapter.getCurrentList() != null) {
+          if (adapter.getCurrentList().size() > 0) {
             swipe.setRefreshing(
                 networkState.getStatus() == NetworkState.LOADING.getStatus());
           } else {
@@ -97,13 +97,13 @@ public class MainActivity extends BaseActivity
 
   private void initAdapter() {
     recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-    recyclerView.setAdapter(adapter2);
-    photosViewModel.photoList.observe(this, pagedList -> adapter2.submitList(pagedList));
+    recyclerView.setAdapter(adapter);
+    photosViewModel.photoList.observe(this, pagedList -> adapter.submitList(pagedList));
     photosViewModel.getNetworkState().observe(this, this::networkStateObserver);
   }
 
   private void networkStateObserver(NetworkState networkState) {
-    adapter2.setNetworkState(networkState);
+    adapter.setNetworkState(networkState);
     swipe.setRefreshing(false);
   }
 

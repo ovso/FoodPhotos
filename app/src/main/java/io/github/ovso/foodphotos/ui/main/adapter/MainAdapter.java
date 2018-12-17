@@ -8,14 +8,13 @@ import android.view.ViewGroup;
 import io.github.ovso.foodphotos.R;
 import io.github.ovso.foodphotos.data.network.model.Photo;
 import io.github.ovso.foodphotos.ui.base.adapter.AdapterDataModel;
-import io.github.ovso.foodphotos.ui.base.adapter.AdapterView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import timber.log.Timber;
 
 public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder>
-    implements AdapterView, AdapterDataModel<Photo> {
+    implements AdapterDataModel<Photo> {
 
   private NetworkState networkState;
 
@@ -72,10 +71,6 @@ public class MainAdapter extends PagedListAdapter<Photo, RecyclerView.ViewHolder
 
   @Override public void clear() {
     items.clear();
-  }
-
-  @Override public void refresh() {
-    notifyItemRangeChanged(0, getSize());
   }
 
   public void setNetworkState(NetworkState newNetworkState) {
